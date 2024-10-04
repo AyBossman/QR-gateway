@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Gateway</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            background-image: url('QR\ image.jpg')
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #qrcode {
+            margin-top: 20px;
+        }
+        .login-form {
+            margin-top: 20px;
+        }
+        input {
+            margin: 10px 0;
+            padding: 5px;
+            width: 200px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        #welcome-page {
+            display: none;
+        }
+        #welcome-page h1 {
+            color: #4CAF50;
+        }
+        .options {
+            margin-top: 20px;
+        }
+        .options button {
+            margin: 10px;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="login-page">
+            <h1>QR Gateway Login</h1>
+            <p>Scan the QR code with your mobile app to log in</p>
+            <div id="qrcode"></div>
+            <div class="login-form">
+                <h2>Or login with credentials</h2>
+                <input type="text" id="username" placeholder="Username">
+                <input type="password" id="password" placeholder="Password">
+                <button onclick="login()">Login</button>
+            </div>
+        </div>
+        <div id="welcome-page">
+            <h1>Welcome to QR Gateway</h1>
+            <p>Thank you for logging in. What would you like to do?</p>
+            <div class="options">
+                <button onclick="alert('Viewing Dashboard')">View Dashboard</button>
+                <button onclick="alert('Managing QR Codes')">Manage QR Codes</button>
+                <button onclick="alert('Accessing Account Settings')">Account Settings</button>
+            </div>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </div>
+    <script>
+        function generateQR() {
+            const sessionId = Math.random().toString(36).substring(2, 15);
+            const loginUrl = `https://yourapp.com/qr-login?session=${sessionId}`;
+            
+            const qr = qrcode(0, 'M');
+            qr.addData(loginUrl);
+            qr.make();
+            
+            document.getElementById('qrcode').innerHTML = qr.createImgTag(5);
+            
+            // Poll the server to check if the user has logged in
+            checkLoginStatus(sessionId);
+        }
+
+        function checkLoginStatus(sessionId) {
+            // Simulating server communication
+            const checkStatus = setInterval(() => {
+                // In a real application, you would make an API call to your server here
+                const fakeServerCheck = Math.random() < 0.2; // 20% chance of success for demo
+                
+                if (fakeServerCheck) {
+                    clearInterval(checkStatus);
+                    showWelcomePage();
+                }
+            }, 2000); // Check every 2 seconds
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // In a real application, you would validate credentials with your server
+            if (username && password) {
+                showWelcomePage();
+            } else {
+                alert('Please enter valid credentials');
+            }
+        }
+
+        function showWelcomePage() {
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('welcome-page').style.display = 'block';
+        }
+
+        function logout() {
+            document.getElementById('login-page').style.display = 'block';
+            document.getElementById('welcome-page').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            generateQR();
+        }
+
+        generateQR();
+    </script>
+</body>
+</html>
