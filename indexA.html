@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Gateway Timer</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js"></script>
+    <style>
+        /* Basic styles for layout */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        .tab {
+            display: none;
+            padding: 20px;
+        }
+        .active {
+            display: block;
+        }
+        #timerDisplay {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        #paymentForm {
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        let timerInterval;
+        let totalSeconds = 0;
+
+        function startTimer() {
+            document.getElementById('start').disabled = true;
+            document.getElementById('stop').disabled = false;
+
+            timerInterval = setInterval(() => {
+                totalSeconds++;
+                document.getElementById('timerDisplay').innerText = formatTime(totalSeconds);
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            document.getElementById('start').disabled = false;
+            document.getElementById('stop').disabled = true;
+
+            // Show payment form
+            document.getElementById('paymentForm').style.display = 'block';
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function showTab(tabId) {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('start').addEventListener('click', startTimer);
+            document.getElementById('stop').addEventListener('click', stopTimer);
+
+            document.getElementById('paymentDetails').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Payment submitted successfully!');
+                this.reset();
+                document.getElementById('paymentForm').style.display = 'none';
+                totalSeconds = 0;
+                document.getElementById('timerDisplay').innerText = '00:00';
+            });
+
+            // Show the first tab by default
+            showTab('about');
+        });
+    </script>
+</head>
+<body>
+
+<header>
+    <h1>QR Gateway</h1>
+    <nav>
+        <ul>
+            <li><a href="#" onclick="showTab('about')">About</a></li>
+            <li><a href="#" onclick="showTab('services')">Services</a></li>
+            <li><a href="#" onclick="showTab('timer')">Timer</a></li>
+            <li><a href="#" onclick="showTab('contact')">Contact</a></li>
+            <li><a href="#" onclick="showTab('partners')">Partners</a></li>
+            <li><a href="#" onclick="showTab('privacy')">Privacy Policy</a></li>
+            <li><a href="#" onclick="showTab('user-agreement')">User Agreement</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section id="about" class="tab active">
+        <h2>About Us</h2>
+        <p>At QR Gateway, we believe in making recreational experiences seamless and efficient. Our innovative system allows users to simply scan a QR code to start a timer, enabling hassle-free access to recreational areas.</p>
+        
+        <h3>Streamlining Transactions</h3>
+        <p>We have revolutionized the way transactions are conducted in recreational spaces. By utilizing QR codes, we've eliminated the need for cash transactions and long lines. Simply scan, start your timer, and enjoy your activities without interruptions.</p>
+        
+        <h3>User-Friendly Experience</h3>
+        <p>Our platform is designed with you in mind. From the moment you arrive, our intuitive interface guides you through the process. Whether you’re activating a timer or completing a payment, everything is straightforward and easy to navigate.</p>
+        
+        <h3>Our Mission</h3>
+        <p>Our mission is to enhance your leisure time by removing the barriers of traditional payment methods, ensuring that you can focus on enjoying your experience. We are committed to leveraging technology to provide a smooth, user-friendly experience.</p>
+    </section>
+
+    <section id="services" class="tab">
+        <h2>Our Services</h2>
+        <ul>
+            <li><strong>QR Code Activation:</strong> Easily activate your timer with a simple scan of a QR code.</li>
+            <li><strong>Real-Time Timer Management:</strong> Track your time seamlessly with our real-time timer feature.</li>
+            <li><strong>Secure Payment Processing:</strong> Experience safe and convenient payment options.</li>
+            <li><strong>User-Friendly Interface:</strong> Our intuitive app interface makes it easy to manage your recreational time.</li>
+            <li><strong>Flexible Access:</strong> Our QR Gateway system adapts to various settings.</li>
+            <li><strong>Analytics Dashboard for Venue Owners:</strong> We offer an analytics dashboard for businesses.</li>
+        </ul>
+    </section>
+
+    <section id="timer" class="tab">
+        <h2>Timer</h2>
+        <div id="timerDisplay">00:00</div>
+        <button id="start">Start Timer</button>
+        <button id="stop" disabled>Stop Timer</button>
+
+        <div id="paymentForm" style="display:none;">
+            <h2>Payment Information</h2>
+            <form id="paymentDetails">
+                <label for="name">Name on Account:</label>
+                <input type="text" id="name" required>
+
+                <label for="address">Address:</label>
+                <input type="text" id="address" required>
+
+                <label for="cardNumber">Card Number:</label>
+                <input type="text" id="cardNumber" required>
+
+                <label for="ccv">CCV:</label>
+                <input type="text" id="ccv" required>
+
+                <label for="expiration">Expiration Date (MM/YY):</label>
+                <input type="text" id="expiration" required>
+
+                <button type="submit">Submit Payment</button>
+            </form>
+        </div>
+    </section>
+
+    <section id="contact" class="tab">
+        <h2>Contact Us</h2>
+        <p>We’d love to hear from you! Whether you have questions about our services, need support, or want to provide feedback, feel free to reach out to us through any of the following methods:</p>
+        <p><strong>Email:</strong> For general inquiries and support, email us at: <br> <a href="mailto:support@qrgateway.com">support@qrgateway.com</a></p>
+        <p><strong>Phone:</strong> Speak to our customer service team at: <br> (123) 456-7890 <br> Available Monday to Friday, 9 AM to 5 PM.</p>
+        <p><strong>Social Media:</strong> Connect with us on social media for updates, tips, and community engagement:</p>
+        <ul>
+            <li><strong>Facebook:</strong> <a href="#">facebook.com/qrgateway</a></li>
+            <li><strong>Twitter:</strong> <a href="#">twitter.com/qrgateway</a></li>
+            <li><strong>Instagram:</strong> <a href="#">instagram.com/qrgateway</a></li>
+        </ul>
+        <p><strong>Visit Us:</strong> If you’re in the area, feel free to stop by our office:</p>
+        <p>123 QR Gateway Lane<br> City, State, ZIP Code</p>
+    </section>
+
+    <section id="partners" class="tab">
+        <h2>Partners</h2>
+        <p>At QR Gateway, we are excited to partner with <strong>Sandimagination</strong>, New England's largest sandbox experience, coming soon to the North Shore Mall in Massachusetts. Our collaboration aims to provide a seamless and engaging experience for all visitors.</p>
+        <p><strong>About Sandimagination:</strong>Sandimagination invites families and individuals to unleash their creativity in a massive sandbox environment. With various play areas, activities, and events, it promises to be a destination for fun and imagination.</p>
+    </section>
+
+    <section id="privacy" class="tab">
+        <h2>Privacy Policy</h2>
+        <p>Your privacy is important to us. At QR Gateway, we are committed to protecting your personal information and your right to privacy. This privacy policy describes how we collect, use, and protect your information when you use our services.</p>
+
+        <h3>Information We Collect</h3>
+        <ul>
+            <li><strong>Personal Information:</strong> We may collect personal information that you provide to us directly, such as your name, email address, and payment information.</li>
+            <li><strong>Usage Data:</strong> We collect information about how you use our services, including your IP address, device information, and usage patterns.</li>
+        </ul>
+
+        <h3>How We Use Your Information</h3>
+        <p>We use the information we collect to:</p>
+        <ul>
+            <li>Provide, operate, and maintain our services.</li>
+            <li>Process your transactions and send you related information.</li>
+            <li>Improve, personalize, and expand our services.</li>
+            <li>Communicate with you, either directly or through one of our partners.</li>
+        </ul>
+
+        <h3>Data Security</h3>
+        <p>We implement a variety of security measures to maintain the safety of your personal information. Your personal information is stored behind secured networks and is only accessible by a limited number of persons who have special access rights.</p>
+
+        <h3>Your Rights</h3>
+        <p>You have the right to access, correct, or delete your personal information. You may also have the right to restrict or object to our processing of your information.</p>
+    </section>
+
+    <section id="user-agreement" class="tab">
+        <h2>User Agreement</h2>
+        <p>Welcome to QR Gateway. By using our services, you agree to comply with and be bound by the following terms and conditions:</p>
+
+        <h3>1. Acceptance of Terms</h3>
+        <p>By accessing or using our services, you agree to be bound by these terms. If you do not agree to these terms, please do not use our services.</p>
+
+        <h3>2. Changes to the Agreement</h3>
+        <p>We reserve the right to modify this User Agreement at any time. Changes will be posted on this page, and your continued use of our services after such changes constitutes your acceptance of the new terms.</p>
+
+        <h3>3. User Responsibilities</h3>
+        <p>You are responsible for maintaining the confidentiality of your account information and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use of your account.</p>
+
+        <h3>4. Limitation of Liability</h3>
+        <p>QR Gateway shall not be liable for any direct, indirect, incidental, or consequential damages arising from your use of the service or inability to use the service.</p>
+
+        <h3>5. Governing Law</h3>
+        <p>This agreement shall be governed by the laws of the state in which QR Gateway operates, without regard to its conflict of law principles.</p>
+    </section>
+</main>
+
+</body>
+</html>
+
